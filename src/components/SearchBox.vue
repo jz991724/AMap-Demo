@@ -18,6 +18,7 @@
 
 <script lang="js">
 import { defineComponent } from 'vue';
+import _ from 'lodash';
 
 export default defineComponent({
   name: 'SearchBox',
@@ -40,7 +41,11 @@ export default defineComponent({
     };
   },
   methods: {
-    initAutocompleteInput(AMap = this.AMap) {
+    /**
+     * 初始化搜索插件
+     * @param AMap
+     */
+    initPlaceSearch(AMap = this.AMap) {
       if (AMap) {
         this.placeSearch = new AMap.PlaceSearch({
           pageSize: 5, // 单页显示结果条数
@@ -54,7 +59,7 @@ export default defineComponent({
       }
     },
     onSearch(e) {
-      this.pois = [];
+      this.poiList = [];
       this?.placeSearch?.search(this.keyWord, (status, result) => {
         // 查询成功时，result 即对应匹配的 POI 信息
         if (status === 'complete' && result?.poiList) {
@@ -75,25 +80,18 @@ export default defineComponent({
       });
     },
   },
-  mounted() {
-    setTimeout(() => {
-      this.initAutocompleteInput();
-    }, 2000);
+  watch: {
+    AMap: {
+      handler(newVal, oldVal) {
+        if (!_.isEqual(newVal, oldVal) && newVal) {
+          this.$nextTick(() => {
+            this.initPlaceSearch();
+          });
+        }
+      },
+      immediate: false,
+    },
   },
-  // watch: {
-  //   AMap: {
-  //     handler(newVal, oldVal) {
-  //       // eslint-disable-next-line no-debugger
-  //       debugger;
-  //       // if (!_.isEqual(newVal, oldVal)) {
-  //       this.$nextTick(() => {
-  //         this.initAutocompleteInput();
-  //       });
-  //       // }
-  //     },
-  //     immediate: false,
-  //   },
-  // },
 });
 </script>
 
