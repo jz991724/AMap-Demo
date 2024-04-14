@@ -1,0 +1,249 @@
+{
+  "pois": [
+    {
+      "id": "B00154DTS5",
+      "name": "上海浦东假日酒店",
+      "type": "住宿服务;宾馆酒店;四星级宾馆",
+      "location": [
+        121.528831,
+        31.223055
+      ],
+      "address": "东方路899号",
+      "tel": "021-58306666",
+      "distance": null,
+      "shopinfo": "0",
+      "website": "www.ihg.com",
+      "pcode": "310000",
+      "citycode": "021",
+      "adcode": "310115",
+      "postcode": "200122",
+      "pname": "上海市",
+      "cityname": "上海市",
+      "adname": "浦东新区",
+      "email": "",
+      "photos": [
+        {
+          "title": "Logo",
+          "url": "http://store.is.autonavi.com/showpic/b151ac27805144f56d934ab819933468",
+          "provider": ""
+        },
+        {
+          "title": "",
+          "url": "http://store.is.autonavi.com/showpic/62ca237ed480743912b77cea574c27e5",
+          "provider": ""
+        },
+        {
+          "title": "假日行政房",
+          "url": "http://store.is.autonavi.com/showpic/8985096a4697454e3b83bc105ed00ff6",
+          "provider": ""
+        }
+      ],
+      "entr_location": [
+        121.529252,
+        31.223411
+      ],
+      "exit_location": null,
+      "groupbuy": false,
+      "discount": false,
+      "indoor_map": false,
+      "rating": "4.7",
+      "hotel_ordering": "1",
+      "star": "4",
+      "_idx": 0,
+      "index": 0
+    },
+    {
+      "id": "B0G24BDTT9",
+      "name": "上海浦东张江智选假日酒店",
+      "type": "住宿服务;宾馆酒店;宾馆酒店",
+      "location": [
+        121.604317,
+        31.181376
+      ],
+      "address": "海科路777号(中科路地铁站2号口步行370米)",
+      "tel": "021-60337888",
+      "distance": null,
+      "shopinfo": "1",
+      "website": "",
+      "pcode": "310000",
+      "citycode": "021",
+      "adcode": "310115",
+      "postcode": "",
+      "pname": "上海市",
+      "cityname": "上海市",
+      "adname": "浦东新区",
+      "email": "",
+      "photos": [
+        {
+          "title": "Logo",
+          "url": "http://store.is.autonavi.com/showpic/aa74c3bee0f9bb94da05fff8b79372f8",
+          "provider": ""
+        },
+        {
+          "title": "标准套房",
+          "url": "http://store.is.autonavi.com/showpic/aba9c545d2cf8152a6b955f737633932",
+          "provider": ""
+        },
+        {
+          "title": "高级双床房",
+          "url": "http://store.is.autonavi.com/showpic/0a986794ef493d87674ea42a38ca6f00",
+          "provider": ""
+        }
+      ],
+      "entr_location": [
+        121.604229,
+        31.181272
+      ],
+      "exit_location": null,
+      "groupbuy": false,
+      "discount": false,
+      "indoor_map": false,
+      "rating": "4.7",
+      "hotel_ordering": "1",
+      "_idx": 1,
+      "index": 1
+    },
+    {
+      "id": "B0FFGFA7PL",
+      "name": "上海浦东盛高假日酒店",
+      "type": "住宿服务;宾馆酒店;宾馆酒店",
+      "location": [
+        121.581431,
+        31.134832
+      ],
+      "address": "康桥镇秀沿路1088号一楼(近恒和中路)",
+      "tel": "021-38291888",
+      "distance": null,
+      "shopinfo": "0",
+      "website": "",
+      "pcode": "310000",
+      "citycode": "021",
+      "adcode": "310115",
+      "postcode": "",
+      "pname": "上海市",
+      "cityname": "上海市",
+      "adname": "浦东新区",
+      "email": "",
+      "photos": [
+        {
+          "title": "",
+          "url": "http://store.is.autonavi.com/showpic/ff86f1212ca71dd58daebf6e7fd0e587",
+          "provider": ""
+        }
+      ],
+      "entr_location": [
+        121.581515,
+        31.134835
+      ],
+      "exit_location": null,
+      "groupbuy": false,
+      "discount": false,
+      "indoor_map": false,
+      "hotel_ordering": "0",
+      "_idx": 2,
+      "index": 2
+    },
+    {
+      "id": "B0H05ZEZHV",
+      "name": "上海世博中心智选假日酒店",
+      "type": "住宿服务;宾馆酒店;宾馆酒店",
+      "location": [
+        121.507177,
+        31.194902
+      ],
+      "address": "浦东南路3470号",
+      "tel": "021-57950077;15901832511",
+      "distance": null,
+      "shopinfo": "1",
+      "website": "",
+      "pcode": "310000",
+      "citycode": "021",
+      "adcode": "310115",
+      "postcode": "",
+      "pname": "上海市",
+      "cityname": "上海市",
+      "adname": "浦东新区",
+      "email": "",
+      "photos": [
+        {
+          "title": "",
+          "url": "http://store.is.autonavi.com/showpic/b8657e9acefc27f17260a62dccef7d29",
+          "provider": ""
+        },
+        {
+          "title": "家庭房",
+          "url": "http://store.is.autonavi.com/showpic/5a3d1d883a610014b35f093e96ed61e4",
+          "provider": ""
+        },
+        {
+          "title": "其他",
+          "url": "http://store.is.autonavi.com/showpic/46c6629ae59c9bb782c70199ed1af44a",
+          "provider": ""
+        }
+      ],
+      "entr_location": [
+        121.507253,
+        31.19503
+      ],
+      "exit_location": null,
+      "groupbuy": false,
+      "discount": false,
+      "indoor_map": false,
+      "rating": "4.5",
+      "hotel_ordering": "1",
+      "_idx": 3,
+      "index": 3
+    },
+    {
+      "id": "B0FFLDDBH4",
+      "name": "上海国际旅游度假区智选假日酒店",
+      "type": "住宿服务;宾馆酒店;宾馆酒店",
+      "location": [
+        121.608268,
+        31.129246
+      ],
+      "address": "秀浦路2500弄8号",
+      "tel": "021-20722666",
+      "distance": null,
+      "shopinfo": "1",
+      "website": "",
+      "pcode": "310000",
+      "citycode": "021",
+      "adcode": "310115",
+      "postcode": "",
+      "pname": "上海市",
+      "cityname": "上海市",
+      "adname": "浦东新区",
+      "email": "",
+      "photos": [
+        {
+          "title": "Logo",
+          "url": "http://store.is.autonavi.com/showpic/9d10fef4ff5e1d8aa3a6cc47a163e4ec",
+          "provider": ""
+        },
+        {
+          "title": "外观",
+          "url": "http://store.is.autonavi.com/showpic/c9335ab81f0afc64e48fbc9b5038a670",
+          "provider": ""
+        },
+        {
+          "title": "高级双床房",
+          "url": "http://store.is.autonavi.com/showpic/4432702a9e1845f33d96c28bc67e1901",
+          "provider": ""
+        }
+      ],
+      "entr_location": [
+        121.608832,
+        31.129665
+      ],
+      "exit_location": null,
+      "groupbuy": false,
+      "discount": false,
+      "indoor_map": false,
+      "rating": "4.8",
+      "hotel_ordering": "1",
+      "_idx": 4,
+      "index": 4
+    }
+  ]
+}

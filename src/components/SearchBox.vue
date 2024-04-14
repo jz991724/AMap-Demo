@@ -10,6 +10,7 @@
                     enter-button
                     style="width: 100%;"
                     v-model="keyWord"
+                    allowClear
                     @search="onSearch"/>
     <div id="panel" style="margin-top: 4px;width: 80%;"></div>
   </div>
@@ -59,12 +60,15 @@ export default defineComponent({
       }
     },
     onSearch(e) {
+      // 清空
+      this?.placeSearch?.clear();
       this.poiList = [];
       this?.placeSearch?.search(this.keyWord, (status, result) => {
         // 查询成功时，result 即对应匹配的 POI 信息
         if (status === 'complete' && result?.poiList) {
           const { poiList } = result;
           this.poiList = poiList || [];
+          console.log('pois:', this.poiList);
           // 遍历搜索结果，并在地图上标记
           // poiList?.pois?.forEach((poi) => {
           //   // const marker = new this.AMap.Marker({
