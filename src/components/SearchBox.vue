@@ -4,36 +4,16 @@
 * @Date  2024/4/14 20:03
 **/
 <template>
-  <div class="global-search-wrapper" style="width: 300px">
-    <a-auto-complete class="global-search"
-                     size="large"
-                     style="width: 100%"
-                     placeholder="input here"
-                     option-label-prop="title"
-                     @select="onSelect"
-                     @search="handleSearch">
-      <template slot="dataSource">
-        <a-select-option v-for="item in dataSource" :key="item.category" :title="item.category">
-          Found {{ item.query }} on
-          <a :href="`https://s.taobao.com/search?q=${item.query}`"
-             target="_blank"
-             rel="noopener noreferrer">
-            {{ item.category }}
-          </a>
-          <span class="global-search-item-count">{{ item.count }} results</span>
-        </a-select-option>
-      </template>
-      <a-input>
-        <a-button slot="suffix"
-                  style="margin-right: -12px"
-                  class="search-btn"
-                  size="large"
-                  type="primary">
-          <a-icon type="search"/>
-        </a-button>
-      </a-input>
-    </a-auto-complete>
+  <div style="z-index: 2;width: 300px;">
+    <a-input-search placeholder="请输入关键字"
+                    id="tipinput"
+                    enter-button
+                    style="width: 100%;"
+                    v-model="keyWord"
+                    @search="onSearch"/>
+    <div id="panel" style="margin-top: 4px;width: 80%;"></div>
   </div>
+
 </template>
 
 <script lang="js">
@@ -41,71 +21,82 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'SearchBox',
+  props: {
+    AMap: {
+      type: Object,
+      default: () => ({}),
+    },
+    map: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
   data() {
     return {
-      dataSource: [],
+      // 地图搜索实体
+      placeSearch: undefined,
+      poiList: [],
+      keyWord: undefined,
     };
   },
   methods: {
-    onSelect(value) {
-      console.log('onSelect', value);
+    initAutocompleteInput(AMap = this.AMap) {
+      if (AMap) {
+        this.placeSearch = new AMap.PlaceSearch({
+          pageSize: 5, // 单页显示结果条数
+          pageIndex: 1, // 页码
+          // city: '010', // 兴趣点城市
+          // citylimit: true, // 是否强制限制在设置的城市内搜索
+          map: this.map, // 展现结果的地图实例
+          panel: 'panel', // 结果列表将在此容器中进行展示。
+          autoFitView: true, // 是否自动调整地图视野使绘制的 Marker 点都处于视口的可见范围
+        });
+      }
     },
-
-    handleSearch(value) {
-      this.dataSource = value ? this.searchResult(value) : [];
-    },
-
-    getRandomInt(max, min = 0) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    },
-
-    searchResult(query) {
-      return new Array(this.getRandomInt(5))
-        .join('.')
-        .split('.')
-        .map((item, idx) => ({
-          query,
-          category: `${query}${idx}`,
-          count: this.getRandomInt(200, 100),
-        }));
+    onSearch(e) {
+      this.pois = [];
+      this?.placeSearch?.search(this.keyWord, (status, result) => {
+        // 查询成功时，result 即对应匹配的 POI 信息
+        if (status === 'complete' && result?.poiList) {
+          const { poiList } = result;
+          this.poiList = poiList || [];
+          // 遍历搜索结果，并在地图上标记
+          // poiList?.pois?.forEach((poi) => {
+          //   // const marker = new this.AMap.Marker({
+          //   //   position: new this.AMap.LngLat(poi.location.getLng(), poi.location.getLat()),
+          //   //   // icon: 'https://a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-default.png',
+          //   //   anchor: 'bottom-center',
+          //   // });
+          //   // eslint-disable-next-line no-debugger
+          //   debugger;
+          //   // this.map.add(marker);
+          // });
+        }
+      });
     },
   },
+  mounted() {
+    setTimeout(() => {
+      this.initAutocompleteInput();
+    }, 2000);
+  },
+  // watch: {
+  //   AMap: {
+  //     handler(newVal, oldVal) {
+  //       // eslint-disable-next-line no-debugger
+  //       debugger;
+  //       // if (!_.isEqual(newVal, oldVal)) {
+  //       this.$nextTick(() => {
+  //         this.initAutocompleteInput();
+  //       });
+  //       // }
+  //     },
+  //     immediate: false,
+  //   },
+  // },
 });
 </script>
 
 <style scoped lang="less">
-.global-search-wrapper {
-  padding-right: 50px;
-}
 
-.global-search {
-  width: 100%;
-}
-
-.global-search.ant-select-auto-complete .ant-select-selection--single {
-  margin-right: -46px;
-}
-
-.global-search.ant-select-auto-complete .ant-input-affix-wrapper .ant-input:not(:last-child) {
-  padding-right: 62px;
-}
-
-.global-search.ant-select-auto-complete .ant-input-affix-wrapper .ant-input-suffix button {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-}
-
-.global-search-item {
-  display: flex;
-}
-
-.global-search-item-desc {
-  flex: auto;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-
-.global-search-item-count {
-  flex: none;
-}
 </style>
