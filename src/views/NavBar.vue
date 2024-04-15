@@ -87,7 +87,7 @@ export default defineComponent({
         .format('dddd'),
       time: moment()
         .format('HH:mm:ss'),
-      activeLayerKey: 'default',
+      activeLayerKey: window.mapConfig.defaultLayer,
     };
   },
   methods: {

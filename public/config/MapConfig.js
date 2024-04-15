@@ -5,7 +5,7 @@ window.mapConfig = {
   securityJsCode: '7826d0b65c6f914c4a42a9f619c52d2b',
   _AMapSecurityConfig: '7826d0b65c6f914c4a42a9f619c52d2b',
   districtName: '上海', // 当前行政区
-  layers: [],
+  defaultLayer: 'default', // default/realTime/satellite
   tableTitle: '信息表',
   // 信息表的列的属性
   tableColumns: [
@@ -25,7 +25,7 @@ window.mapConfig = {
       dataIndex: 'name',
       width: 100,
       ellipsis: true,
-      align: 'center',
+      align: 'left',
     },
     {
       title: '地址',
@@ -33,7 +33,7 @@ window.mapConfig = {
       dataIndex: 'address',
       width: 160,
       ellipsis: true,
-      align: 'center',
+      align: 'left',
     }],
   infoWindowFieldList: { // 弹出框要显示的字段
     address: '地址',
@@ -41,4 +41,10 @@ window.mapConfig = {
     tel: '电话',
     photos: 4, // 显示图片的数量
   },
+  visiblePlugs: [// 地图上要显示的插件
+    'navBar',
+    'searchBox',
+    'infoTable',
+    // 'positionBox',
+  ],
 };

@@ -7,19 +7,20 @@
   <div>
     <div id="container"></div>
 
-    <nav-bar :a-map="AMap"
+    <nav-bar v-if="visiblePlugs.includes('navBar')" :a-map="AMap"
              :map="map"
              :district-name="districtName"
              :layers="layers"
              style="position: absolute;top: 0;left: 0;"></nav-bar>
 
-    <search-box :a-map="AMap"
+    <search-box v-if="visiblePlugs.includes('searchBox')" :a-map="AMap"
                 :map="map"
                 size="large"
                 style="position: absolute;top: 70px;left: 10px;"></search-box>
 
-    <info-table handleDirection="left" ref="infoTable"></info-table>
-    <position-box :a-map="AMap"
+    <info-table v-if="visiblePlugs.includes('infoTable')" handleDirection="left"
+                ref="infoTable"></info-table>
+    <position-box v-if="visiblePlugs.includes('positionBox')" :a-map="AMap"
                   :map="map"
                   style="position: absolute;bottom: 10px;right: 10px;"></position-box>
   </div>
@@ -53,6 +54,7 @@ export default defineComponent({
         realTime: undefined,
         satellite: undefined,
       }, // 可以被切换的图层
+      visiblePlugs: window.mapConfig.visiblePlugs,
     };
   },
   methods: {
@@ -92,7 +94,7 @@ export default defineComponent({
             viewMode: '2D', // 是否为3D地图模式
             zoom: 11, // 初始化地图级别
             layers: [// 只显示默认图层的时候，layers可以缺省
-              this.layers.satellite.server,
+              this.layers?.[window.mapConfig.defaultLayer].server,
             ],
           });
 

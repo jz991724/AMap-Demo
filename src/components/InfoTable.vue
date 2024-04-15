@@ -24,9 +24,9 @@ import { defineComponent } from 'vue';
 import BaseDrawer from '@/components/BaseDrawer.vue';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const redMarkerIcon = require('../assets/store_loaction.png');
+const redMarkerActiveIcon = require('../../public/image/icon/store_loaction_active.png');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const redMarkerActiveIcon = require('../assets/store_loaction_active.png');
+const redMarkerIcon = require('../../public/image/icon/store_loaction.png');
 
 export default defineComponent({
   name: 'InfoTable',
