@@ -5,6 +5,7 @@
 **/
 <template>
   <base-drawer v-bind="drawerDefaultOptions" ref="baseDrawer">
+    <div slot="title" style="width: 100%;text-align: center;">{{ drawerName }}</div>
     <a-table :customRow="customRow"
              :columns="columns"
              :data-source="tableDataSource"
@@ -37,7 +38,6 @@ export default defineComponent({
      */
     drawerDefaultOptions() {
       return {
-        title: window.mapConfig.tableTitle,
         closable: false,
         mask: false,
         wrapClassName: 'baseDrawer',
@@ -58,6 +58,7 @@ export default defineComponent({
   },
   data() {
     return {
+      drawerName: window.mapConfig.tableTitle,
       // 用来包装其它覆盖物类的实例
       overlayGroup: undefined,
       columns: window.mapConfig.tableColumns || [],
@@ -288,5 +289,11 @@ export default defineComponent({
 </script>
 
 <style scoped lang="less">
-
+/deep/ .ant-table-thead {
+  > tr {
+    > th {
+      text-align: center !important;
+    }
+  }
+}
 </style>
