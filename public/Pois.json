@@ -248,7 +248,7 @@
       "cost": "588.00",
       "ticket_ordering": "0",
       "_idx": 0,
-      "index": 0
+      "index": 5
     },
     {
       "id": "B0FFFYPH5Z",
@@ -299,7 +299,7 @@
       "rating": "4.7",
       "hotel_ordering": "1",
       "_idx": 1,
-      "index": 1
+      "index": 6
     },
     {
       "id": "B0FFGYMCF9",
@@ -346,7 +346,7 @@
       "indoor_map": false,
       "rating": "4.9",
       "_idx": 2,
-      "index": 2
+      "index": 7
     },
     {
       "id": "B0I1N5ABC9",
@@ -382,7 +382,7 @@
       "indoor_map": false,
       "rating": "4.4",
       "_idx": 3,
-      "index": 3
+      "index": 8
     },
     {
       "id": "B0FFHG8R0R",
@@ -424,7 +424,7 @@
       "discount": false,
       "indoor_map": false,
       "_idx": 4,
-      "index": 4
+      "index": 9
     },
     {
       "id": "B00155FXB3",
@@ -526,7 +526,7 @@
       "rating": "4.9",
       "ticket_ordering": "0",
       "_idx": 1,
-      "index": 1
+      "index": 10
     },
     {
       "id": "BV11113526",
@@ -569,7 +569,7 @@
       "discount": false,
       "indoor_map": false,
       "_idx": 2,
-      "index": 2
+      "index": 11
     },
     {
       "id": "B0FFIIHXZ9",
@@ -616,7 +616,7 @@
       "indoor_map": false,
       "rating": "4.6",
       "_idx": 3,
-      "index": 3
+      "index": 12
     },
     {
       "id": "B0FFLBPUT6",
@@ -667,7 +667,7 @@
       "rating": "4.9",
       "ticket_ordering": "0",
       "_idx": 4,
-      "index": 4
+      "index": 13
     }
   ]
 }
