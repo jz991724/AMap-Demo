@@ -105,24 +105,24 @@ export default {
 
   /* 滚动条样式 */
 
-  ::-webkit-scrollbar {
-    width: 8px; /* 设置滚动条宽度 */
-    height: 8px; /* 设置滚动条高度 */
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background-color: lightslategray; /* 设置滑块背景色 */
-    border-radius: 2px; /* 设置滑块边角圆角程度 */
-  }
-
-  ::-webkit-scrollbar-track {
-    background-color: lightgray; /* 设置滚动条轨道背景色 */
-    border-radius: 2px; /* 设置滚动条轨道边角圆角程度 */
-  }
-
-  ::-webkit-scrollbar-button {
-    display: none; /* 不显示按钮 */
-  }
+  //::-webkit-scrollbar {
+  //  width: 8px; /* 设置滚动条宽度 */
+  //  height: 8px; /* 设置滚动条高度 */
+  //}
+  //
+  //::-webkit-scrollbar-thumb {
+  //  background-color: lightslategray; /* 设置滑块背景色 */
+  //  border-radius: 2px; /* 设置滑块边角圆角程度 */
+  //}
+  //
+  //::-webkit-scrollbar-track {
+  //  background-color: lightgray; /* 设置滚动条轨道背景色 */
+  //  border-radius: 2px; /* 设置滚动条轨道边角圆角程度 */
+  //}
+  //
+  //::-webkit-scrollbar-button {
+  //  display: none; /* 不显示按钮 */
+  //}
 
   .handleBtn {
     position: absolute;

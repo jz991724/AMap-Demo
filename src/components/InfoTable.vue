@@ -5,13 +5,19 @@
 **/
 <template>
   <base-drawer v-bind="drawerDefaultOptions" ref="baseDrawer">
-    <a-table :customRow="customRow" :columns="columns" :data-source="dataSource" bordered></a-table>
+    <a-table :customRow="customRow"
+             :columns="columns"
+             :data-source="dataSource"
+             bordered
+             :scroll="{y:300}"
+    ></a-table>
   </base-drawer>
 </template>
 
 <script lang="js">
 import { defineComponent } from 'vue';
 import BaseDrawer from '@/components/BaseDrawer.vue';
+import number from 'ant-design-vue/lib/statistic/Number';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const redMarkerIcon = require('../assets/store_loaction.png');
@@ -34,6 +40,7 @@ export default defineComponent({
         width: 500,
         wrapStyle: {
           height: '500px',
+          top: '90px',
         },
         bodyStyle: {
           height: '440px',
@@ -56,19 +63,24 @@ export default defineComponent({
           customRender(text) {
             return text + 1;
           },
-          width: 20,
+          width: 40,
+          align: 'center',
         },
         {
           title: '名称',
           key: 'name',
           dataIndex: 'name',
           width: 100,
+          ellipsis: true,
+          align: 'center',
         },
         {
           title: '地址',
           key: 'address',
           dataIndex: 'address',
           width: 160,
+          ellipsis: true,
+          align: 'center',
         }],
       activeMarker: undefined,
       customRow: (record) => ({
@@ -98,9 +110,16 @@ export default defineComponent({
         },
       }),
       dataSource: [],
+      pagination: {
+        current: 1,
+        defaultPageSize: 10,
+        total: 0,
+        showTotal: (total) => `共 ${total} 条`,
+      },
       AMap: undefined,
       map: undefined,
       markerDict: {},
+      infoWindow: undefined,
     };
   },
   methods: {
@@ -123,6 +142,44 @@ export default defineComponent({
       if (baseDrawer) {
         baseDrawer.closeDrawer();
       }
+    },
+    openInfoWindow(position, info) {
+      let content = Object.entries(window.mapConfig.infoWindowFieldList)
+        .map(([key, cnName]) => {
+          if (key === 'photos') {
+            let photos = (info?.[key] || []).slice(0, Number(cnName) || 3);
+
+            photos = photos.map(({
+              title,
+              url,
+            }) => `<img width="50" height="50" style="margin-right: 4px;" src="${url}" alt="${title}"/>`);
+
+            return `<div style="display: flex;justify-content: start;">
+                       ${photos.join('')}
+                                 </div>`;
+          }
+          return `<div style="display: flex;">
+                                 <div>${cnName}：</div><div>${info?.[key] || '--'}</div>
+                                 </div>`;
+        })
+        .join('');
+
+      content = `<div style="min-width: 200px;">
+                ${content}
+                </div>`;
+
+      if (!this.infoWindow) {
+        this.infoWindow = new this.AMap.InfoWindow({
+          // isCustom: true, // 使用自定义窗体
+          content,
+          // offset: new this.AMap.Pixel(-5, -5),
+          anchor: 'bottom-center',
+        });
+      } else {
+        this.infoWindow.setContent(content);
+      }
+
+      this.infoWindow.open(this.map, position);
     },
     /**
      * 渲染信息点
@@ -152,6 +209,10 @@ export default defineComponent({
             direction: 'top',
           },
           extData: poi,
+        });
+
+        marker.on('click', (e) => {
+          this.openInfoWindow(e?.lnglat, e?.target?.getExtData());
         });
 
         // 保存到字典
@@ -189,7 +250,10 @@ export default defineComponent({
         })
         .then((data) => {
           if (data?.pois) {
+            // eslint-disable-next-line no-debugger
+            debugger;
             this.dataSource = data.pois;
+            this.pagination.total = this.dataSource.length;
 
             // 渲染这些标记
             this.markerDict = this.renderMarkers(this.dataSource);

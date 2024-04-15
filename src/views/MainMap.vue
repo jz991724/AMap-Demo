@@ -7,10 +7,16 @@
   <div>
     <div id="container"></div>
 
+    <nav-bar :a-map="AMap"
+             :map="map"
+             :district-name="districtName"
+             :layers="layers"
+             style="position: absolute;top: 0;left: 0;"></nav-bar>
+
     <search-box :a-map="AMap"
                 :map="map"
                 size="large"
-                style="position: absolute;top: 5px;left: 5px;"></search-box>
+                style="position: absolute;top: 90px;left: 5px;"></search-box>
 
     <info-table handleDirection="left" ref="infoTable" title="信息表"></info-table>
   </div>
@@ -21,10 +27,12 @@ import { defineComponent } from 'vue';
 import AMapLoader from '@amap/amap-jsapi-loader';
 import SearchBox from '@/components/SearchBox.vue';
 import InfoTable from '@/components/InfoTable.vue';
+import NavBar from '@/views/NavBar.vue';
 
 export default defineComponent({
   name: 'MainMap',
   components: {
+    NavBar,
     InfoTable,
     SearchBox,
   },
@@ -32,13 +40,28 @@ export default defineComponent({
     return {
       AMap: undefined,
       map: undefined,
-      district: undefined, // 行政区
+      districtPlug: undefined, // 行政区插件
       districtPolygon: undefined, // 行政区边界
+      districtName: window.mapConfig.districtName, // 行政区名称
+      layers: {
+        default: undefined,
+        realTime: undefined,
+        satellite: undefined,
+      }, // 可以被切换的图层
     };
   },
   methods: {
     initAMap() {
-      const { AMapKey } = window.mapConfig;
+      const {
+        AMapKey,
+        securityJsCode,
+      } = window.mapConfig;
+      // 这个配置很重要，必须设置，否则你的 行政服务搜索api无法使用生成回调
+      // eslint-disable-next-line no-underscore-dangle
+      window._AMapSecurityConfig = {
+        securityJsCode,
+      };
+
       AMapLoader.load({
         key: AMapKey, // 申请好的Web端开发者Key，首次调用 load 时必填
         version: '2.0', // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
@@ -47,7 +70,7 @@ export default defineComponent({
           'AMap.Scale',
           'AMap.ToolBar',
           'AMap.DistrictSearch',
-          'AMap.MapType',
+          'AMap.Weather',
           'AMap.Geolocation',
           'AMap.AutoComplete',
           'AMap.PlaceSearch',
@@ -55,21 +78,51 @@ export default defineComponent({
       })
         .then((AMap) => {
           this.AMap = AMap;
+
+          // 加载备选图层
+          this.initLayers();
+
           this.map = new AMap.Map('container', {
             // 设置地图容器id
             viewMode: '2D', // 是否为3D地图模式
             zoom: 11, // 初始化地图级别
-            center: [116.397428, 39.90923], // 初始化地图中心点位置
+            layers: [// 只显示默认图层的时候，layers可以缺省
+              this.layers.satellite.server,
+            ],
           });
 
           // 绘制行政区边界
-          this.drawBoundsByDistrictName(window?.mapConfig?.districtName || '全国');
+          this.drawBoundsByDistrictName(this.districtName || '全国');
 
+          // 弹出表格
           this.openInfoTable();
+
+          // 获取天气数据
+          // this.getWeatherInfo();
         })
         .catch((e) => {
           console.error(e);
         });
+    },
+    // 初始化可以被切换额图层数组
+    initLayers() {
+      this.layers = {
+        default: {
+          server: this.AMap.createDefaultLayer(),
+          label: '标准',
+        }, // 高德默认标准图层
+        realTime: {
+          server: new this.AMap.TileLayer.Traffic({
+            zIndex: 10,
+            zooms: [7, 22],
+          }),
+          label: '实时路况',
+        }, // 实时路况
+        satellite: {
+          server: new this.AMap.TileLayer.Satellite(),
+          label: '卫星',
+        }, // 卫星
+      };
     },
     openInfoTable() {
       const { infoTable } = this.$refs;
@@ -83,18 +136,18 @@ export default defineComponent({
      */
     drawBoundsByDistrictName(districtName) {
       // 加载行政区划插件
-      if (!this.district) {
+      if (!this.districtPlug) {
         // 实例化DistrictSearch
         const opts = {
           subdistrict: 0, // 获取边界不需要返回下级行政区
           extensions: 'all', // 返回行政区边界坐标组等具体信息
           level: 'district', // 查询行政级别为 市
         };
-        this.district = new this.AMap.DistrictSearch(opts);
+        this.districtPlug = new this.AMap.DistrictSearch(opts);
       }
       // 行政区查询
-      this.district.setLevel('city');
-      this.district.search(districtName, (status, result) => {
+      this.districtPlug.setLevel('city');
+      this.districtPlug.search(districtName, (status, result) => {
         if (this.districtPolygon) {
           this.map.remove(this.districtPolygon);// 清除上次结果
           this.districtPolygon = null;
