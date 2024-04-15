@@ -7,17 +7,21 @@
   <base-drawer v-bind="drawerDefaultOptions" ref="baseDrawer">
     <a-table :customRow="customRow"
              :columns="columns"
-             :data-source="dataSource"
+             :data-source="tableDataSource"
              bordered
-             :scroll="{y:300}"
+             :pagination="pagination"
+             size="small"
     ></a-table>
+
+    <a-modal v-model="isPreViewPhoto" :title="preViewPhoto.title" :footer="null">
+      <img height="500" width="100%" :src="preViewPhoto.url" :alt="preViewPhoto.title">
+    </a-modal>
   </base-drawer>
 </template>
 
 <script lang="js">
 import { defineComponent } from 'vue';
 import BaseDrawer from '@/components/BaseDrawer.vue';
-import number from 'ant-design-vue/lib/statistic/Number';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const redMarkerIcon = require('../assets/store_loaction.png');
@@ -33,17 +37,18 @@ export default defineComponent({
      */
     drawerDefaultOptions() {
       return {
+        title: window.mapConfig.tableTitle,
         closable: false,
         mask: false,
         wrapClassName: 'baseDrawer',
         destroyOnClose: true,
         width: 500,
         wrapStyle: {
-          height: '500px',
-          top: '90px',
+          height: '560px',
+          top: '70px',
         },
         bodyStyle: {
-          height: '440px',
+          height: '495px',
           overflow: 'auto',
           padding: '8px',
         },
@@ -55,33 +60,7 @@ export default defineComponent({
     return {
       // 用来包装其它覆盖物类的实例
       overlayGroup: undefined,
-      columns: [
-        {
-          title: '序号',
-          key: 'index',
-          dataIndex: 'index',
-          customRender(text) {
-            return text + 1;
-          },
-          width: 40,
-          align: 'center',
-        },
-        {
-          title: '名称',
-          key: 'name',
-          dataIndex: 'name',
-          width: 100,
-          ellipsis: true,
-          align: 'center',
-        },
-        {
-          title: '地址',
-          key: 'address',
-          dataIndex: 'address',
-          width: 160,
-          ellipsis: true,
-          align: 'center',
-        }],
+      columns: window.mapConfig.tableColumns || [],
       activeMarker: undefined,
       customRow: (record) => ({
         on: {
@@ -110,16 +89,27 @@ export default defineComponent({
         },
       }),
       dataSource: [],
+      tableDataSource: [],
       pagination: {
         current: 1,
         defaultPageSize: 10,
         total: 0,
+        showQuickJumper: true,
         showTotal: (total) => `共 ${total} 条`,
+        onChange: (page, pageSize) => {
+          this.pagination.current = page;
+          this.tableDataSource = this.dataSource.slice((page - 1) * pageSize, page * pageSize);
+        },
       },
       AMap: undefined,
       map: undefined,
       markerDict: {},
       infoWindow: undefined,
+      preViewPhoto: { // 当前预览的图片
+        url: undefined,
+        title: undefined,
+      },
+      isPreViewPhoto: false,
     };
   },
   methods: {
@@ -143,16 +133,22 @@ export default defineComponent({
         baseDrawer.closeDrawer();
       }
     },
+    // 查看图片
+    checkImage(e) {
+      debugger;
+      this.isPreViewPhoto = true;
+      this.preViewPhoto = e;
+    },
     openInfoWindow(position, info) {
       let content = Object.entries(window.mapConfig.infoWindowFieldList)
         .map(([key, cnName]) => {
+          // 图片
           if (key === 'photos') {
             let photos = (info?.[key] || []).slice(0, Number(cnName) || 3);
-
             photos = photos.map(({
               title,
               url,
-            }) => `<img width="50" height="50" style="margin-right: 4px;" src="${url}" alt="${title}"/>`);
+            }) => `<img class="preImageItem" width="50" height="50" style="margin-right: 4px;" src="${url}" alt="${title}"/>`);
 
             return `<div style="display: flex;justify-content: start;">
                        ${photos.join('')}
@@ -177,9 +173,27 @@ export default defineComponent({
         });
       } else {
         this.infoWindow.setContent(content);
-      }
+        this.infoWindow.open(this.map, position);
 
-      this.infoWindow.open(this.map, position);
+        // 获取所有类名为.preImageItem的元素
+        const preImageItems = document.querySelectorAll('.preImageItem');
+
+        // 为每个元素添加点击事件监听器
+        preImageItems.forEach((item) => {
+          item.addEventListener('click', (e) => {
+            debugger;
+            const {
+              alt,
+              currentSrc,
+            } = e.target || {};
+            this.isPreViewPhoto = true;
+            this.preViewPhoto = {
+              title: alt || '预览',
+              url: currentSrc,
+            };
+          });
+        });
+      }
     },
     /**
      * 渲染信息点
@@ -250,11 +264,17 @@ export default defineComponent({
         })
         .then((data) => {
           if (data?.pois) {
-            // eslint-disable-next-line no-debugger
-            debugger;
             this.dataSource = data.pois;
             this.pagination.total = this.dataSource.length;
-
+            this.pagination.current = 1;
+            const {
+              current,
+              defaultPageSize,
+            } = this.pagination;
+            this.tableDataSource = this.dataSource.slice(
+              (current - 1) * defaultPageSize,
+              current * defaultPageSize,
+            );
             // 渲染这些标记
             this.markerDict = this.renderMarkers(this.dataSource);
           }

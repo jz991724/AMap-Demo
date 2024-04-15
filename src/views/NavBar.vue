@@ -35,7 +35,7 @@
           </template>
         </a-menu>
         <a-button style="width: 100px;">
-          {{ layers[activeLayerKey].label || '' }}
+          {{ layers[activeLayerKey]?.label || '' }}
           <a-icon type="down"/>
         </a-button>
       </a-dropdown>

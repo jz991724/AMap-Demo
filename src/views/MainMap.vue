@@ -16,9 +16,12 @@
     <search-box :a-map="AMap"
                 :map="map"
                 size="large"
-                style="position: absolute;top: 90px;left: 5px;"></search-box>
+                style="position: absolute;top: 70px;left: 10px;"></search-box>
 
-    <info-table handleDirection="left" ref="infoTable" title="信息表"></info-table>
+    <info-table handleDirection="left" ref="infoTable"></info-table>
+    <position-box :a-map="AMap"
+                  :map="map"
+                  style="position: absolute;bottom: 10px;right: 10px;"></position-box>
   </div>
 </template>
 
@@ -28,10 +31,12 @@ import AMapLoader from '@amap/amap-jsapi-loader';
 import SearchBox from '@/components/SearchBox.vue';
 import InfoTable from '@/components/InfoTable.vue';
 import NavBar from '@/views/NavBar.vue';
+import PositionBox from '@/components/PositionBox.vue';
 
 export default defineComponent({
   name: 'MainMap',
   components: {
+    PositionBox,
     NavBar,
     InfoTable,
     SearchBox,
@@ -163,10 +168,10 @@ export default defineComponent({
             bounds[i] = [bounds[i]];
           }
           this.districtPolygon = new this.AMap.Polygon({
-            strokeWeight: 1,
+            strokeWeight: 2,
             path: bounds,
-            fillOpacity: 0.4,
-            fillColor: '#80d8ff',
+            fillOpacity: 0,
+            // fillColor: '#80d8ff',
             strokeColor: '#0091ea',
           });
           this.map.add(this.districtPolygon);
