@@ -171,7 +171,7 @@ export default defineComponent({
             mask[i] = [bounds[i]];
           }
           this.mask = mask;
-          // 掩模添加
+          // 掩模添加;
           // this.map.setMask(mask);
 
           // 添加高度面
@@ -190,7 +190,7 @@ export default defineComponent({
           // 描边
           this.districtPolygon = new this.AMap.Polygon({
             strokeWeight: 2,
-            path: bounds,
+            path: mask,
             fillOpacity: 0,
             // fillColor: '#80d8ff',
             strokeColor: '#0091ea',

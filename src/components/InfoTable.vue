@@ -23,6 +23,7 @@
 <script lang="js">
 import { defineComponent } from 'vue';
 import BaseDrawer from '@/components/BaseDrawer.vue';
+import _ from 'lodash';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const redMarkerActiveIcon = require('../../public/image/icon/store_loaction_active.png');
@@ -271,13 +272,21 @@ export default defineComponent({
               (current - 1) * defaultPageSize,
               current * defaultPageSize,
             );
-            // 渲染这些标记
-            this.markerDict = this.renderMarkers(this.dataSource);
           }
         })
         .catch((error) => {
           console.error('There has been a problem with your fetch operation:', error);
         });
+    },
+  },
+  watch: {
+    tableDataSource: {
+      handler(newVal, oldVal) {
+        if (!_.isEqual(newVal, oldVal)) {
+          // 渲染这些标记
+          this.markerDict = this.renderMarkers(newVal);
+        }
+      },
     },
   },
 });
