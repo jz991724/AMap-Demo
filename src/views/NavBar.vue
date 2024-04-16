@@ -11,7 +11,7 @@
     <a-col :span="8">
       <a-space>
         <div>{{ datetime }}</div>
-        <div>{{chineseWeekday}}</div>
+        <div>{{ chineseWeekday }}</div>
         <div>{{ time }}</div>
       </a-space>
     </a-col>
@@ -42,6 +42,10 @@
     </a-col>
     <a-col :span="4">
       <a-space v-if="weatherInfo">
+        <div>
+          <template v-if="weatherInfo.city">{{ weatherInfo.city }}</template>
+          <template v-else>{{ weatherInfo.province }}</template>
+        </div>
         <div>{{ weatherInfo.weather || '' }}</div>
         <div>{{ weatherInfo.temperature || '' }}°C</div>
       </a-space>
@@ -72,6 +76,10 @@ export default defineComponent({
     layers: {
       type: Object,
       default: () => ({}),
+    },
+    mask: { // 掩模
+      type: Array,
+      default: () => ([]),
     },
   },
   data() {
@@ -117,13 +125,13 @@ export default defineComponent({
      * 图层切换
      */
     handleMenuClick({ key }) {
-      // eslint-disable-next-line no-debugger
-      debugger;
       this.activeLayerKey = key;
       const activeLayer = this?.layers?.[key];
       if (activeLayer?.server) {
         this.$message.success(`${activeLayer?.label}图层`);
+        debugger;
         this.map.setLayers([activeLayer.server]);
+        // this.map.setMask(this.mask);
       }
     },
   },

@@ -134,13 +134,8 @@ export default defineComponent({
         baseDrawer.closeDrawer();
       }
     },
-    // 查看图片
-    checkImage(e) {
-      debugger;
-      this.isPreViewPhoto = true;
-      this.preViewPhoto = e;
-    },
     openInfoWindow(position, info) {
+      debugger;
       let content = Object.entries(window.mapConfig.infoWindowFieldList)
         .map(([key, cnName]) => {
           // 图片
@@ -174,27 +169,27 @@ export default defineComponent({
         });
       } else {
         this.infoWindow.setContent(content);
-        this.infoWindow.open(this.map, position);
-
-        // 获取所有类名为.preImageItem的元素
-        const preImageItems = document.querySelectorAll('.preImageItem');
-
-        // 为每个元素添加点击事件监听器
-        preImageItems.forEach((item) => {
-          item.addEventListener('click', (e) => {
-            debugger;
-            const {
-              alt,
-              currentSrc,
-            } = e.target || {};
-            this.isPreViewPhoto = true;
-            this.preViewPhoto = {
-              title: alt || '预览',
-              url: currentSrc,
-            };
-          });
-        });
       }
+
+      this.infoWindow.open(this.map, position);
+
+      // 获取所有类名为.preImageItem的元素
+      const preImageItems = document.querySelectorAll('.preImageItem');
+
+      // 为每个元素添加点击事件监听器
+      preImageItems.forEach((item) => {
+        item.addEventListener('click', (e) => {
+          const {
+            alt,
+            currentSrc,
+          } = e.target || {};
+          this.isPreViewPhoto = true;
+          this.preViewPhoto = {
+            title: alt || '预览',
+            url: currentSrc,
+          };
+        });
+      });
     },
     /**
      * 渲染信息点

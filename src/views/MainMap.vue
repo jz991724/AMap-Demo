@@ -11,6 +11,7 @@
              :map="map"
              :district-name="districtName"
              :layers="layers"
+             :mask="mask"
              style="position: absolute;top: 0;left: 0;"></nav-bar>
 
     <search-box v-if="visiblePlugs.includes('searchBox')" :a-map="AMap"
@@ -55,6 +56,7 @@ export default defineComponent({
         satellite: undefined,
       }, // 可以被切换的图层
       visiblePlugs: window.mapConfig.visiblePlugs,
+      mask: undefined, // 掩模
     };
   },
   methods: {
@@ -73,7 +75,6 @@ export default defineComponent({
         key: AMapKey, // 申请好的Web端开发者Key，首次调用 load 时必填
         version: '2.0', // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
         plugins: [
-          'AMap.ElasticMarker',
           'AMap.Scale',
           'AMap.ToolBar',
           'AMap.DistrictSearch',
@@ -92,10 +93,12 @@ export default defineComponent({
           this.map = new AMap.Map('container', {
             // 设置地图容器id
             viewMode: '2D', // 是否为3D地图模式
-            zoom: 11, // 初始化地图级别
+            zoom: 9, // 初始化地图级别
             layers: [// 只显示默认图层的时候，layers可以缺省
               this.layers?.[window.mapConfig.defaultLayer].server,
             ],
+            // 设置地图背景图
+            // mapStyle: 'amap://styles/74c7e4c94b8ce88780ef54e44c677366',
           });
 
           // 绘制行政区边界
@@ -103,9 +106,6 @@ export default defineComponent({
 
           // 弹出表格
           this.openInfoTable();
-
-          // 获取天气数据
-          // this.getWeatherInfo();
         })
         .catch((e) => {
           console.error(e);
@@ -148,12 +148,11 @@ export default defineComponent({
         const opts = {
           subdistrict: 0, // 获取边界不需要返回下级行政区
           extensions: 'all', // 返回行政区边界坐标组等具体信息
-          level: 'district', // 查询行政级别为 市
+          level: 'city', // 查询行政级别为 市
         };
         this.districtPlug = new this.AMap.DistrictSearch(opts);
       }
-      // 行政区查询
-      this.districtPlug.setLevel('city');
+
       this.districtPlug.search(districtName, (status, result) => {
         if (this.districtPolygon) {
           this.map.remove(this.districtPolygon);// 清除上次结果
@@ -164,11 +163,31 @@ export default defineComponent({
           return;
         }
         const bounds = result.districtList[0].boundaries;
+        // 区域掩模
+        const mask = [];
         if (bounds) {
           // 生成行政区划polygon
           for (let i = 0; i < bounds.length; i += 1) { // 构造MultiPolygon的path
-            bounds[i] = [bounds[i]];
+            mask[i] = [bounds[i]];
           }
+          this.mask = mask;
+          // 掩模添加
+          // this.map.setMask(mask);
+
+          // 添加高度面
+          // const object3Dlayer = new this.AMap.Object3DLayer({ zIndex: 1 });
+          // this.map.add(object3Dlayer);
+          // const height = -8000;
+          // const color = '#0088ffcc';// rgba
+          // const wall = new this.AMap.Object3D.Wall({
+          //   path: bounds,
+          //   height,
+          //   color,
+          // });
+          // wall.transparent = true;
+          // object3Dlayer.add(wall);
+
+          // 描边
           this.districtPolygon = new this.AMap.Polygon({
             strokeWeight: 2,
             path: bounds,
@@ -177,7 +196,7 @@ export default defineComponent({
             strokeColor: '#0091ea',
           });
           this.map.add(this.districtPolygon);
-          this.map.setFitView(this.districtPolygon);// 视口自适应
+          // this.map.setFitView(this.districtPolygon);// 视口自适应
         }
       });
     },
