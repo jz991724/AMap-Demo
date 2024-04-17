@@ -162,43 +162,53 @@ export default defineComponent({
           console.warn(`无法找到${districtName}行政区`);
           return;
         }
+        // 行政区边缘
         const bounds = result.districtList[0].boundaries;
-        // 区域掩模
-        const mask = [];
         if (bounds) {
-          // 生成行政区划polygon
-          for (let i = 0; i < bounds.length; i += 1) { // 构造MultiPolygon的path
-            mask[i] = [bounds[i]];
-          }
-          this.mask = mask;
-          // 掩模添加;
-          // this.map.setMask(mask);
-
-          // 添加高度面
-          // const object3Dlayer = new this.AMap.Object3DLayer({ zIndex: 1 });
-          // this.map.add(object3Dlayer);
-          // const height = -8000;
-          // const color = '#0088ffcc';// rgba
-          // const wall = new this.AMap.Object3D.Wall({
-          //   path: bounds,
-          //   height,
-          //   color,
-          // });
-          // wall.transparent = true;
-          // object3Dlayer.add(wall);
-
+          // 绘制遮罩
+          this.renderMask(bounds);
           // 描边
           this.districtPolygon = new this.AMap.Polygon({
             strokeWeight: 2,
-            path: mask,
+            path: bounds,
             fillOpacity: 0,
             // fillColor: '#80d8ff',
             strokeColor: '#0091ea',
           });
           this.map.add(this.districtPolygon);
-          // this.map.setFitView(this.districtPolygon);// 视口自适应
+          this.map.setFitView(this.districtPolygon);// 视口自适应
         }
       });
+    },
+    /**
+     * 渲染遮罩
+     * @param holes 孔的路径
+     * @param map
+     */
+    renderMask(holes, map = this.map) {
+      // 外多边形坐标数组和内多边形坐标数组（整个地图）
+      const outer = [
+        new this.AMap.LngLat(-360, 90, true),
+        new this.AMap.LngLat(-360, -90, true),
+        new this.AMap.LngLat(360, -90, true),
+        new this.AMap.LngLat(360, 90, true),
+      ];
+
+      const pathArray = [
+        outer,
+        ...holes,
+      ];
+      debugger;
+      // 遮罩部分
+      const polygon = new this.AMap.Polygon({
+        pathL: pathArray,
+        strokeColor: '#00eeff',
+        strokeWeight: 1,
+        fillColor: '#71B3ff',
+        fillOpacity: 0.5,
+      });
+      polygon.setPath(pathArray);
+      map.add(polygon);
     },
   },
   mounted() {

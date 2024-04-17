@@ -242,7 +242,7 @@ export default defineComponent({
       this.overlayGroup.clearOverlays();
       this.overlayGroup.addOverlays(markers);
 
-      this.map.setFitView(markers);
+      // this.map.setFitView(markers);
 
       return markersDict;
     },
