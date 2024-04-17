@@ -4,7 +4,7 @@
 * @Date  2024/4/15 12:44
 **/
 <template>
-  <a-row style="width: 100%;background: cornflowerblue;color: white;font-size: 16px;"
+  <a-row style="width: 100%;background: #4674C7FF;color: white;font-size: 16px;"
          type="flex"
          justify="space-around"
          align="middle">
@@ -16,6 +16,7 @@
       </a-space>
     </a-col>
     <a-col :span="4">
+      <a-button type="primary" icon="reload" @click="onReload">刷新</a-button>
     </a-col>
     <a-col :span="8">
       <a-space>
@@ -146,6 +147,10 @@ export default defineComponent({
     },
     onChangeMask(e) {
       this.$emit('switchVisibleMask', e);
+    },
+    onReload() {
+      // eslint-disable-next-line no-restricted-globals
+      location.reload();
     },
   },
   created() {
