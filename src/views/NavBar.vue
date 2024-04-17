@@ -8,12 +8,14 @@
          type="flex"
          justify="space-around"
          align="middle">
-    <a-col :span="8">
+    <a-col :span="4">
       <a-space>
         <div>{{ datetime }}</div>
         <div>{{ chineseWeekday }}</div>
         <div>{{ time }}</div>
       </a-space>
+    </a-col>
+    <a-col :span="4">
     </a-col>
     <a-col :span="8">
       <a-space>
@@ -23,22 +25,29 @@
       </a-space>
     </a-col>
     <a-col :span="4">
-      <a-dropdown>
-        <a-menu slot="overlay"
-                @click="handleMenuClick"
-                :value="activeLayerKey">
-          <template v-for="[key,info] in Object.entries(layers)">
-            <a-menu-item v-if="info&&info.label" :key="key">
-              <!--           <a-icon type="layer"/>-->
-              {{ info.label || '' }}
-            </a-menu-item>
-          </template>
-        </a-menu>
-        <a-button style="width: 100px;">
-          {{ layers[activeLayerKey]?.label || '' }}
-          <a-icon type="down"/>
-        </a-button>
-      </a-dropdown>
+      <a-space>
+        <a-switch checked-children="遮罩开"
+                  un-checked-children="遮罩关"
+                  :default-checked="visibleMask"
+                  @change="onChangeMask"/>
+
+        <a-dropdown>
+          <a-menu slot="overlay"
+                  @click="handleMenuClick"
+                  :value="activeLayerKey">
+            <template v-for="[key,info] in Object.entries(layers)">
+              <a-menu-item v-if="info&&info.label" :key="key">
+                <!--           <a-icon type="layer"/>-->
+                {{ info.label || '' }}
+              </a-menu-item>
+            </template>
+          </a-menu>
+          <a-button style="width: 100px;">
+            {{ layers[activeLayerKey]?.label || '' }}
+            <a-icon type="down"/>
+          </a-button>
+        </a-dropdown>
+      </a-space>
     </a-col>
     <a-col :span="4">
       <a-space v-if="weatherInfo">
@@ -60,6 +69,7 @@ import moment from 'moment';
 
 export default defineComponent({
   name: 'NavBar',
+  emits: ['switchVisibleMask'],
   props: {
     AMap: {
       type: Object,
@@ -96,6 +106,7 @@ export default defineComponent({
       time: moment()
         .format('HH:mm:ss'),
       activeLayerKey: window.mapConfig.defaultLayer,
+      visibleMask: window.mapConfig.defaultShowMask,
     };
   },
   methods: {
@@ -129,10 +140,12 @@ export default defineComponent({
       const activeLayer = this?.layers?.[key];
       if (activeLayer?.server) {
         this.$message.success(`${activeLayer?.label}图层`);
-        debugger;
         this.map.setLayers([activeLayer.server]);
         // this.map.setMask(this.mask);
       }
+    },
+    onChangeMask(e) {
+      this.$emit('switchVisibleMask', e);
     },
   },
   created() {

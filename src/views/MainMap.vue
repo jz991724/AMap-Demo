@@ -11,7 +11,7 @@
              :map="map"
              :district-name="districtName"
              :layers="layers"
-             :mask="mask"
+             @switchVisibleMask="onSwitchVisibleMask"
              style="position: absolute;top: 0;left: 0;"></nav-bar>
 
     <search-box v-if="visiblePlugs.includes('searchBox')" :a-map="AMap"
@@ -74,6 +74,7 @@ export default defineComponent({
       AMapLoader.load({
         key: AMapKey, // 申请好的Web端开发者Key，首次调用 load 时必填
         version: '2.0', // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
+        zoom: 9,
         plugins: [
           'AMap.Scale',
           'AMap.ToolBar',
@@ -176,7 +177,12 @@ export default defineComponent({
             strokeColor: '#0091ea',
           });
           this.map.add(this.districtPolygon);
-          this.map.setFitView(this.districtPolygon);// 视口自适应
+          this.map.setFitView(
+            this.districtPolygon,
+            false, // 动画过渡到制定位置
+            [60, 60, 60, 60], // 周围边距，上、下、左、右
+            10, // 最大 zoom 级别
+          );// 视口自适应
         }
       });
     },
@@ -198,7 +204,7 @@ export default defineComponent({
         outer,
         ...holes,
       ];
-      debugger;
+
       // 遮罩部分
       const polygon = new this.AMap.Polygon({
         pathL: pathArray,
@@ -208,7 +214,23 @@ export default defineComponent({
         fillOpacity: 0.5,
       });
       polygon.setPath(pathArray);
-      map.add(polygon);
+      this.mask = polygon;
+      if (window.mapConfig.defaultShowMask) {
+        map.add(polygon);
+      }
+    },
+    /**
+     * 切换是否显示遮罩
+     * @param e
+     */
+    onSwitchVisibleMask(e) {
+      if (e && this.mask) {
+        this.map.add(this.mask);
+        this.$message.success('遮罩已打开');
+      } else {
+        this.map.remove(this.mask);
+        this.$message.warn('遮罩已关闭');
+      }
     },
   },
   mounted() {
