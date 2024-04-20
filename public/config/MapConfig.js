@@ -5,7 +5,7 @@ window.mapConfig = {
   securityJsCode: '7826d0b65c6f914c4a42a9f619c52d2b',
   _AMapSecurityConfig: '7826d0b65c6f914c4a42a9f619c52d2b',
   districtName: '徐汇区', // 当前行政区
-  defaultLayer: 'satellite', // default/realTime/satellite
+  defaultLayerKey: 'satellite', // default/realTime/satellite
   defaultShowMask: true, // 是否默认显示图层遮罩
   setFitViewMaxZoom: undefined, // 聚焦行政区后最大的zoom
   tableTitle: '信息表',

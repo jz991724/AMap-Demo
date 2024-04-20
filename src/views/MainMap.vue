@@ -12,8 +12,11 @@
              :map="map"
              :district-name="districtName"
              :layers="layers"
+             :default-active-layer-key="activeLayerKey"
+             :default-visible-mask="isShowMask"
              @switchVisibleMask="onSwitchVisibleMask"
              @refreshMap="onRefreshMap"
+             @selectedLayer="onSelectedLayer"
              style="position: absolute;top: 0;left: 0;"></nav-bar>
 
     <search-box v-if="visiblePlugs.includes('searchBox')"
@@ -64,6 +67,7 @@ export default defineComponent({
       visiblePlugs: window.mapConfig.visiblePlugs,
       mask: undefined, // 掩模
       isShowMask: window.mapConfig.defaultShowMask,
+      activeLayerKey: window.mapConfig.defaultLayerKey,
     };
   },
   methods: {
@@ -103,7 +107,7 @@ export default defineComponent({
             viewMode: '2D', // 是否为3D地图模式
             zoom: 9, // 初始化地图级别
             layers: [// 只显示默认图层的时候，layers可以缺省
-              this.layers?.[window.mapConfig.defaultLayer].server,
+              this.layers?.[this.activeLayerKey].server,
             ],
             // 设置地图背景图
             // mapStyle: 'amap://styles/74c7e4c94b8ce88780ef54e44c677366',
@@ -257,6 +261,18 @@ export default defineComponent({
         this.visiblePlugs = [...this.visiblePlugs, 'infoTable'];
         this.initAMap();
       }, 1000);
+    },
+    /**
+     * 选择了底图
+     * @param key
+     */
+    onSelectedLayer(key) {
+      this.activeLayerKey = key;
+      const activeLayer = this?.layers?.[key];
+      if (activeLayer?.server) {
+        this.$message.success(`${activeLayer?.label}图层`);
+        this.map.setLayers([activeLayer.server]);
+      }
     },
   },
   mounted() {

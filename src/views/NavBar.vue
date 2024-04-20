@@ -70,7 +70,7 @@ import moment from 'moment';
 
 export default defineComponent({
   name: 'NavBar',
-  emits: ['switchVisibleMask', 'refreshMap'],
+  emits: ['switchVisibleMask', 'refreshMap', 'selectedLayer'],
   props: {
     AMap: {
       type: Object,
@@ -94,11 +94,11 @@ export default defineComponent({
     },
     defaultActiveLayerKey: {
       type: String,
-      default: window.mapConfig.defaultLayer,
+      default: undefined,
     },
     defaultVisibleMask: {
       type: Boolean,
-      default: !!window.mapConfig.defaultShowMask,
+      default: false,
     },
   },
   data() {
@@ -146,12 +146,7 @@ export default defineComponent({
      */
     handleMenuClick({ key }) {
       this.activeLayerKey = key;
-      const activeLayer = this?.layers?.[key];
-      if (activeLayer?.server) {
-        this.$message.success(`${activeLayer?.label}图层`);
-        this.map.setLayers([activeLayer.server]);
-        // this.map.setMask(this.mask);
-      }
+      this.$emit('selectedLayer', key);
     },
     onChangeMask(e) {
       this.$emit('switchVisibleMask', e);
