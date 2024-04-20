@@ -7,21 +7,27 @@
   <div>
     <div id="container"></div>
 
-    <nav-bar v-if="visiblePlugs.includes('navBar')" :a-map="AMap"
+    <nav-bar v-if="visiblePlugs.includes('navBar')"
+             :a-map="AMap"
              :map="map"
              :district-name="districtName"
              :layers="layers"
              @switchVisibleMask="onSwitchVisibleMask"
+             @refreshMap="onRefreshMap"
              style="position: absolute;top: 0;left: 0;"></nav-bar>
 
-    <search-box v-if="visiblePlugs.includes('searchBox')" :a-map="AMap"
+    <search-box v-if="visiblePlugs.includes('searchBox')"
+                :a-map="AMap"
                 :map="map"
                 size="large"
                 style="position: absolute;top: 70px;left: 10px;"></search-box>
 
-    <info-table v-if="visiblePlugs.includes('infoTable')" handleDirection="left"
+    <info-table v-if="visiblePlugs.includes('infoTable')"
+                handleDirection="left"
                 ref="infoTable"></info-table>
-    <position-box v-if="visiblePlugs.includes('positionBox')" :a-map="AMap"
+
+    <position-box v-if="visiblePlugs.includes('positionBox')"
+                  :a-map="AMap"
                   :map="map"
                   style="position: absolute;bottom: 10px;right: 10px;"></position-box>
   </div>
@@ -57,6 +63,7 @@ export default defineComponent({
       }, // 可以被切换的图层
       visiblePlugs: window.mapConfig.visiblePlugs,
       mask: undefined, // 掩模
+      isShowMask: window.mapConfig.defaultShowMask,
     };
   },
   methods: {
@@ -138,6 +145,12 @@ export default defineComponent({
         infoTable.openDrawer(this.AMap, this.map);
       }
     },
+    closeInfoTable() {
+      const { infoTable } = this.$refs;
+      if (infoTable) {
+        infoTable.closeDrawer();
+      }
+    },
     /**
      * 通过行政区名称绘制边界线
      * @param districtName
@@ -179,9 +192,9 @@ export default defineComponent({
           this.map.add(this.districtPolygon);
           this.map.setFitView(
             this.districtPolygon,
-            false, // 动画过渡到制定位置
+            true, // 动画过渡到制定位置
             [60, 60, 60, 60], // 周围边距，上、下、左、右
-            10, // 最大 zoom 级别
+            // 50, // 最大 zoom 级别
           );// 视口自适应
         }
       });
@@ -215,7 +228,7 @@ export default defineComponent({
       });
       polygon.setPath(pathArray);
       this.mask = polygon;
-      if (window.mapConfig.defaultShowMask) {
+      if (this.isShowMask) {
         map.add(polygon);
       }
     },
@@ -224,6 +237,7 @@ export default defineComponent({
      * @param e
      */
     onSwitchVisibleMask(e) {
+      this.isShowMask = e;
       if (e && this.mask) {
         this.map.add(this.mask);
         this.$message.success('遮罩已打开');
@@ -231,6 +245,18 @@ export default defineComponent({
         this.map.remove(this.mask);
         this.$message.warn('遮罩已关闭');
       }
+    },
+    /**
+     * 地图刷新
+     */
+    onRefreshMap(e) {
+      this.visiblePlugs = this.visiblePlugs.filter((plug) => !['infoTable'].includes(plug));
+      this.map.clearMap();
+      this.map?.destroy();
+      setTimeout(() => {
+        this.visiblePlugs = [...this.visiblePlugs, 'infoTable'];
+        this.initAMap();
+      }, 1000);
     },
   },
   mounted() {

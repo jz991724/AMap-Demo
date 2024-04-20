@@ -8,17 +8,17 @@
          type="flex"
          justify="space-around"
          align="middle">
-    <a-col :span="4">
+    <a-col :span="6">
       <a-space>
         <div>{{ datetime }}</div>
         <div>{{ chineseWeekday }}</div>
         <div>{{ time }}</div>
       </a-space>
     </a-col>
-    <a-col :span="4">
+    <a-col :span="3">
       <a-button type="primary" icon="reload" @click="onReload">刷新</a-button>
     </a-col>
-    <a-col :span="8">
+    <a-col :span="6">
       <a-space>
         <!--        <a-divider type="vertical"></a-divider>-->
         <div class="projectName">{{ projectName || '地图标记' }}</div>
@@ -50,7 +50,7 @@
         </a-dropdown>
       </a-space>
     </a-col>
-    <a-col :span="4">
+    <a-col :span="5">
       <a-space v-if="weatherInfo">
         <div>
           <template v-if="weatherInfo.city">{{ weatherInfo.city }}</template>
@@ -70,7 +70,7 @@ import moment from 'moment';
 
 export default defineComponent({
   name: 'NavBar',
-  emits: ['switchVisibleMask'],
+  emits: ['switchVisibleMask', 'refreshMap'],
   props: {
     AMap: {
       type: Object,
@@ -148,9 +148,8 @@ export default defineComponent({
     onChangeMask(e) {
       this.$emit('switchVisibleMask', e);
     },
-    onReload() {
-      // eslint-disable-next-line no-restricted-globals
-      location.reload();
+    onReload(e) {
+      this.$emit('refreshMap', e);
     },
   },
   created() {

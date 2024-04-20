@@ -136,7 +136,6 @@ export default defineComponent({
       }
     },
     openInfoWindow(position, info) {
-      debugger;
       let content = Object.entries(window.mapConfig.infoWindowFieldList)
         .map(([key, cnName]) => {
           // 图片
@@ -236,7 +235,7 @@ export default defineComponent({
       });
 
       if (!this.overlayGroup) {
-        this.overlayGroup = new this.AMap.OverlayGroup(markers);
+        this.overlayGroup = new this.AMap.OverlayGroup();
         this.overlayGroup.setMap(this.map);
       }
       this.overlayGroup.clearOverlays();
