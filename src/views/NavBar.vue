@@ -92,6 +92,14 @@ export default defineComponent({
       type: Array,
       default: () => ([]),
     },
+    defaultActiveLayerKey: {
+      type: String,
+      default: window.mapConfig.defaultLayer,
+    },
+    defaultVisibleMask: {
+      type: Boolean,
+      default: !!window.mapConfig.defaultShowMask,
+    },
   },
   data() {
     return {
@@ -106,8 +114,8 @@ export default defineComponent({
         .format('dddd'),
       time: moment()
         .format('HH:mm:ss'),
-      activeLayerKey: window.mapConfig.defaultLayer,
-      visibleMask: window.mapConfig.defaultShowMask,
+      activeLayerKey: this.defaultActiveLayerKey,
+      visibleMask: this.defaultVisibleMask,
     };
   },
   methods: {

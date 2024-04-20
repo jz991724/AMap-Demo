@@ -194,7 +194,7 @@ export default defineComponent({
             this.districtPolygon,
             true, // 动画过渡到制定位置
             [60, 60, 60, 60], // 周围边距，上、下、左、右
-            // 50, // 最大 zoom 级别
+            window.mapConfig.setFitViewMaxZoom, // 最大 zoom 级别
           );// 视口自适应
         }
       });
